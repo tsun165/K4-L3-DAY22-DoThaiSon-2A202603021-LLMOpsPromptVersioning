@@ -7,8 +7,23 @@
 > | [RUBRIC.md](RUBRIC.md) | Tiêu chí chấm điểm, điểm thưởng (tối đa +10) |
 > | [SUBMISSION.md](SUBMISSION.md) | Tên repo, cấu trúc nộp bài, nơi nộp, deadline |
 > | [RULES.md](RULES.md) | Quy định sử dụng AI, sao chép, nộp muộn, bảo mật API key |
+> | [evidence/README.md](evidence/README.md) | Báo cáo chi tiết RAGAS và bằng chứng nghiệm thu |
 
-# Chào mừng các bạn đến với Day 22: LangSmith + Prompt Versioning
+# Day 22: LangSmith + Prompt Versioning
+
+## 🔗 Thông tin Tracing & Dự án
+
+- **Học viên:** Đỗ Thái Sơn
+- **MSSV:** 2A202603021
+- **GitHub:** [tsun165](https://github.com/tsun165)
+- **LangSmith Organization & Tracing Dashboard:** [https://smith.langchain.com/o/d575f7b2-d452-4820-ac3a-54db214dda1d](https://smith.langchain.com/o/d575f7b2-d452-4820-ac3a-54db214dda1d)
+- **LangSmith Tracing Project:** `day22-lab` (Tổng cộng **> 700 root traces** / **> 6,500 total trace runs**)
+- **LangSmith Prompt Hub:**
+  - Prompt V1 (Ngắn gọn): `do-thai-son-rag-prompt-v1`
+  - Prompt V2 (Cấu trúc / Chuyên gia): `do-thai-son-rag-prompt-v2`
+- **Kết quả RAGAS Faithfulness:** **V1 = 0.9598** | **V2 = 0.9563** (Cả 2 đều đạt $\ge 0.90$)
+
+---
 
 ## Tổng quan
 
