@@ -127,8 +127,22 @@ def get_embeddings(provider: str = None):
         # 3. Mặc định: Dùng FastEmbed chạy local (không cần API key)
         else:
             print("ℹ️  FPT provider không khai báo FPT_EMBEDDING_MODEL -> Sử dụng FastEmbed local embeddings.")
-            from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
-            return FastEmbedEmbeddings()
+            from langchain_core.embeddings import Embeddings
+            from fastembed import TextEmbedding
+
+            class LocalFastEmbed(Embeddings):
+                def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5"):
+                    self.model_name = model_name
+                    self.model = model_name
+                    self._embed_model = TextEmbedding(model_name=model_name)
+
+                def embed_documents(self, texts: list[str]) -> list[list[float]]:
+                    return [list(map(float, e)) for e in self._embed_model.embed(texts)]
+
+                def embed_query(self, text: str) -> list[float]:
+                    return list(map(float, next(self._embed_model.embed([text]))))
+
+            return LocalFastEmbed()
 
     elif provider in ("openai", "openrouter"):
         from langchain_openai import OpenAIEmbeddings
