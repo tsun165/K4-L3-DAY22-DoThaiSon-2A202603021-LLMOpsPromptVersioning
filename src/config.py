@@ -47,6 +47,12 @@ OPENROUTER_API_KEY  = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_MODEL    = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
+# ── FPT AI Factory (OpenAI-compatible) ────────────────────────────────────
+FPT_API_KEY          = os.getenv("FPT_API_KEY", "")
+FPT_BASE_URL         = os.getenv("FPT_BASE_URL", "")
+FPT_MODEL            = os.getenv("FPT_MODEL", "Qwen/Qwen2.5-7B-Instruct")
+FPT_EMBEDDING_MODEL  = os.getenv("FPT_EMBEDDING_MODEL", "")
+
 # ── LangSmith ─────────────────────────────────────────────────────────────
 LANGSMITH_API_KEY = os.getenv("LANGCHAIN_API_KEY", "")
 LANGSMITH_PROJECT = os.getenv("LANGCHAIN_PROJECT", "day22-lab")
@@ -64,6 +70,8 @@ def validate() -> bool:
 
     if PROVIDER == "openai" and not OPENAI_API_KEY:
         missing.append("OPENAI_API_KEY")
+    elif PROVIDER == "fpt" and not (FPT_API_KEY or OPENAI_API_KEY):
+        missing.append("FPT_API_KEY hoặc OPENAI_API_KEY")
     elif PROVIDER == "gemini" and not GOOGLE_API_KEY:
         missing.append("GOOGLE_API_KEY")
     elif PROVIDER == "anthropic" and not ANTHROPIC_API_KEY:

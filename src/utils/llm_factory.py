@@ -34,15 +34,18 @@ def get_llm(provider: str = None, temperature: float = 0.0):
     """
     provider = (provider or config.PROVIDER).lower()
 
-    if provider == "openai":
+    if provider in ("openai", "fpt"):
         from langchain_openai import ChatOpenAI
+        api_key = config.FPT_API_KEY if (provider == "fpt" and config.FPT_API_KEY) else config.OPENAI_API_KEY
+        base_url = config.FPT_BASE_URL if (provider == "fpt" and config.FPT_BASE_URL) else config.OPENAI_BASE_URL
+        model = config.FPT_MODEL if (provider == "fpt" and config.FPT_MODEL) else config.OPENAI_MODEL
         kwargs = {
-            "model": config.OPENAI_MODEL,
-            "api_key": config.OPENAI_API_KEY,
+            "model": model,
+            "api_key": api_key,
             "temperature": temperature,
         }
-        if config.OPENAI_BASE_URL:
-            kwargs["base_url"] = config.OPENAI_BASE_URL
+        if base_url:
+            kwargs["base_url"] = base_url
         return ChatOpenAI(**kwargs)
 
     elif provider == "gemini":
@@ -105,7 +108,29 @@ def get_embeddings(provider: str = None):
     """
     provider = (provider or config.PROVIDER).lower()
 
-    if provider in ("openai", "openrouter"):
+    if provider == "fpt":
+        # 1. Nếu FPT workspace có model embedding riêng
+        if config.FPT_EMBEDDING_MODEL:
+            from langchain_openai import OpenAIEmbeddings
+            return OpenAIEmbeddings(
+                model=config.FPT_EMBEDDING_MODEL,
+                api_key=config.FPT_API_KEY or config.OPENAI_API_KEY,
+                base_url=config.FPT_BASE_URL,
+            )
+        # 2. Nếu có OpenAI API key thật, dùng OpenAI embeddings
+        elif config.OPENAI_API_KEY and not config.OPENAI_API_KEY.startswith("your_"):
+            from langchain_openai import OpenAIEmbeddings
+            return OpenAIEmbeddings(
+                model=config.OPENAI_EMBEDDING_MODEL,
+                api_key=config.OPENAI_API_KEY,
+            )
+        # 3. Mặc định: Dùng FastEmbed chạy local (không cần API key)
+        else:
+            print("ℹ️  FPT provider không khai báo FPT_EMBEDDING_MODEL -> Sử dụng FastEmbed local embeddings.")
+            from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
+            return FastEmbedEmbeddings()
+
+    elif provider in ("openai", "openrouter"):
         from langchain_openai import OpenAIEmbeddings
         kwargs = {
             "model": config.OPENAI_EMBEDDING_MODEL,
